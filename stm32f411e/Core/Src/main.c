@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include <stdlib.h>  // Pour atoi()
+#include <string.h>
 #include "bmp280.h"
 #include "i2c_lcd.h"
 
@@ -124,28 +125,41 @@ static void EXTILine0_Config(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   /* Enable and set EXTI Line0 Interrupt to the lowest priority */
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 3, 0);
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
+#define RX_BUF_SIZE 16
+
+uint8_t  uart_byte;                       // pour réception 1 octet
+uint8_t  uart_rx_buffer[RX_BUF_SIZE];     // buffer de reconstruction
+uint8_t  rx_index = 0;
 uint32_t co2 = 0;
-uint8_t uart_rx_buffer[16];     // Assez grand pour contenir l'entier
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if (huart->Instance == USART2)
-  {
-    // S'assurer que la chaîne est bien terminée par '\0'
-   uart_rx_buffer[15] = '\0';  // Au cas où pas de '\n'
+    if (huart->Instance == USART2)
+    {
+        // Stocke l'octet et avance l'index
+        uart_rx_buffer[rx_index++] = uart_byte;
 
-    // Conversion de la chaîne reçue en entier
-    co2 = atoi((char*)uart_rx_buffer);
-    memset(uart_rx_buffer, 0, sizeof(uart_rx_buffer));
+        // Si fin de trame (\n) ou buffer plein :
+        if (uart_byte == '\n' || rx_index >= RX_BUF_SIZE-1)
+        {
+            uart_rx_buffer[rx_index] = '\0';   // termine la chaîne
+            co2 = atoi((char*)uart_rx_buffer); // convertit
 
-    // Réactiver la réception
-    HAL_UART_Receive_IT(&huart2, uart_rx_buffer, sizeof(uart_rx_buffer));
-    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-  }
+            // vidage pour prochaine réception
+            rx_index = 0;
+            memset(uart_rx_buffer, 0, RX_BUF_SIZE);
+
+            // indication visuelle
+            HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+        }
+
+        // Relance toujours la réception d’1 octet
+        HAL_UART_Receive_IT(&huart2, &uart_byte, 1);
+    }
 }
 BMP280_HandleTypedef bmp280;
 
@@ -235,7 +249,8 @@ int main(void)
 
 	printf("BMP280: found %s\n", bme280p ? "BME280" : "BMP280");
 	EXTILine0_Config();
-	HAL_UART_Receive_IT(&huart2, uart_rx_buffer, sizeof(uart_rx_buffer));
+	// Lancement de la 1ʳᵉ réception 1 octet
+	HAL_UART_Receive_IT(&huart2, &uart_byte, 1);
 
   /* USER CODE END 2 */
 

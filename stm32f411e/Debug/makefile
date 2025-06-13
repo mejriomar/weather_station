@@ -60,8 +60,8 @@ all: main-build
 main-build: mission_project2.elf secondary-outputs
 
 # Tool invocations
-mission_project2.elf mission_project2.map: $(OBJS) $(USER_OBJS) C:\stm32\mission_project2\STM32F411VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "mission_project2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\stm32\mission_project2\STM32F411VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mission_project2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+mission_project2.elf mission_project2.map: $(OBJS) $(USER_OBJS) C:\Users\omarm\Desktop\weather_station\stm32f411e\STM32F411VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "mission_project2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\omarm\Desktop\weather_station\stm32f411e\STM32F411VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mission_project2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -161,10 +161,10 @@ void loop(){
       {
         digitalWrite(LED1_PIN, HIGH);
         digitalWrite(LED2_PIN, HIGH);
-        delay(500);
-        digitalWrite(LED1_PIN, LOW);
-        digitalWrite(LED2_PIN, LOW);
-        delay(500);
+        // delay(500);
+        // digitalWrite(LED1_PIN, LOW);
+        // digitalWrite(LED2_PIN, LOW);
+        // delay(500);
       }
       else
       {
