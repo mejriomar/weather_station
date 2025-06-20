@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+import emailjs from 'https://esm.sh/@emailjs/browser';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -56,12 +57,13 @@ const setupUI = (user) => {
     const dbRefGaz = ref(database, `${dbPath}/gaz`);
     const dbRefFlame = ref(database, `${dbPath}/flame`);
     const dbRefCo2 = ref(database, `${dbPath}/co2`);
-    
+      emailjs.init("FOY90D2TQq6LOrT84");
       emailjs.send("service_bf82mnr", "template_nu0p69n", {
       to_email: "omejri417@gmail.com",
-      subject: "Alerte : Gaz détecté",
-      message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
+      subject: "Utilisateur conntecté",
+      message: "bon retoure !"
     })
+    console.log("user connected, Email sent!");
     // Update page with new readings
     onValue(dbRefTemp, (snap) => {
       tempElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
@@ -80,7 +82,7 @@ let gazAlertSent = false;
   const gazValue = snap.val();
   gazElement.innerText = gazValue;
 
-  if (gazValue === "gaz detected" && !gazAlertSent) {
+  if (gazValue === " Gaz detected" && !gazAlertSent) {
     gazAlertSent = true;
 
     emailjs.send("service_bf82mnr", "template_nu0p69n", {
@@ -96,7 +98,7 @@ let gazAlertSent = false;
     });
   }
 
-  if (gazValue !== "gaz detected") {
+  if (gazValue !== " Gaz detected") {
     gazAlertSent = false;
   }
 });
