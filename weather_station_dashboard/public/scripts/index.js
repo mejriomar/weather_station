@@ -56,7 +56,12 @@ const setupUI = (user) => {
     const dbRefGaz = ref(database, `${dbPath}/gaz`);
     const dbRefFlame = ref(database, `${dbPath}/flame`);
     const dbRefCo2 = ref(database, `${dbPath}/co2`);
-
+    
+      emailjs.send("service_bf82mnr", "template_nu0p69n", {
+      to_email: "omejri417@gmail.com",
+      subject: "Alerte : Gaz détecté",
+      message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
+    })
     // Update page with new readings
     onValue(dbRefTemp, (snap) => {
       tempElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
@@ -69,9 +74,33 @@ const setupUI = (user) => {
     onValue(dbRefPres, (snap) => {
       presElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
     });
-    onValue(dbRefGaz, (snap) => {
-      gazElement.innerText = snap.val();
+
+let gazAlertSent = false;
+  onValue(dbRefGaz, (snap) => {
+  const gazValue = snap.val();
+  gazElement.innerText = gazValue;
+
+  if (gazValue === "gaz detected" && !gazAlertSent) {
+    gazAlertSent = true;
+
+    emailjs.send("service_bf82mnr", "template_nu0p69n", {
+      to_email: "omejri417@gmail.com",
+      subject: "Alerte : Gaz détecté",
+      message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
+    })
+    .then(() => {
+      console.log("Email envoyé !");
+    })
+    .catch((error) => {
+      console.error("Erreur d'envoi d'email :", error);
     });
+  }
+
+  if (gazValue !== "gaz detected") {
+    gazAlertSent = false;
+  }
+});
+
     onValue(dbRefFlame, (snap) => {
       flameElement.innerText = snap.val();
     });
