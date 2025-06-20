@@ -57,8 +57,8 @@ const setupUI = (user) => {
     const dbRefGaz = ref(database, `${dbPath}/gaz`);
     const dbRefFlame = ref(database, `${dbPath}/flame`);
     const dbRefCo2 = ref(database, `${dbPath}/co2`);
-      emailjs.init("FOY90D2TQq6LOrT84");
-      emailjs.send("service_bf82mnr", "template_nu0p69n", {
+    emailjs.init("FOY90D2TQq6LOrT84");
+    emailjs.send("service_bf82mnr", "template_nu0p69n", {
       to_email: "omejri417@gmail.com",
       subject: "Utilisateur conntecté",
       message: "bon retoure !"
@@ -77,34 +77,57 @@ const setupUI = (user) => {
       presElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
     });
 
-let gazAlertSent = false;
-  onValue(dbRefGaz, (snap) => {
-  const gazValue = snap.val();
-  gazElement.innerText = gazValue;
+    let gazAlertSent = false;
+    onValue(dbRefGaz, (snap) => {
+      const gazValue = snap.val();
+      gazElement.innerText = gazValue;
 
-  if (gazValue === " Gaz detected" && !gazAlertSent) {
-    gazAlertSent = true;
+      if (gazValue === " Gaz detected" && !gazAlertSent) {
+        gazAlertSent = true;
 
-    emailjs.send("service_bf82mnr", "template_nu0p69n", {
-      to_email: "omejri417@gmail.com",
-      subject: "Alerte : Gaz détecté",
-      message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
-    })
-    .then(() => {
-      console.log("Email envoyé !");
-    })
-    .catch((error) => {
-      console.error("Erreur d'envoi d'email :", error);
+        emailjs.send("service_bf82mnr", "template_nu0p69n", {
+          to_email: "omejri417@gmail.com",
+          subject: "Alerte : Gaz détecté",
+          message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
+        })
+          .then(() => {
+            console.log("gaz Email envoyé !");
+          })
+          .catch((error) => {
+            console.error("Erreur d'envoi d'email :", error);
+          });
+      }
+
+      if (gazValue !== " Gaz detected") {
+        gazAlertSent = false;
+      }
     });
-  }
 
-  if (gazValue !== " Gaz detected") {
-    gazAlertSent = false;
-  }
-});
-
+    let flameAlertSent = false;
     onValue(dbRefFlame, (snap) => {
-      flameElement.innerText = snap.val();
+
+      const flameValue = snap.val();
+      flameElement.innerText = flameValue;
+
+      if (flameValue === " flame detected" && !flameAlertSent) {
+        flameAlertSent = true;
+
+        emailjs.send("service_bf82mnr", "template_nu0p69n", {
+          to_email: "omejri417@gmail.com",
+          subject: "Alerte : flame détecté",
+          message: "⚠️ Attention : un flame a été détecté par votre station météo !"
+        })
+          .then(() => {
+            console.log("flame Email envoyé !");
+          })
+          .catch((error) => {
+            console.error("Erreur d'envoi d'email :", error);
+          });
+      }
+
+      if (flameValue !== " flame detected") {
+        flameAlertSent = false;
+      }
     });
     onValue(dbRefCo2, (snap) => {
       co2Element.innerText = snap.val();

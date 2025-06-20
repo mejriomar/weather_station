@@ -1,81 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>weather station app</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <!--TOP BAR-->
-    <div class="topnav">
-      <h1>Sensor Readings App <i class="fas fa-clipboard-list"></i></h1>
-    </div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>weather station app</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <!--TOP BAR-->
+  <div class="topnav">
+    <h1>Sensor Readings App <i class="fas fa-clipboard-list"></i></h1>
+  </div>
 
-    <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
-    <div id="authentication-bar" style="display: none;">
-      <p><span id="authentication-status">User logged in</span>
-         <span id="user-details">USEREMAIL</span>
-         <a href="#" id="logout-link">(logout)</a>
-      </p>
-    </div>
+  <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
+  <div id="authentication-bar" style="display: none;">
+    <p><span id="authentication-status">User logged in</span>
+      <span id="user-details">USEREMAIL</span>
+      <a href="#" id="logout-link">(logout)</a>
+    </p>
+  </div>
 
-    <!--LOGIN FORM-->
-    <form id="login-form" style="display: none;">
-      <div class="form-elements-container">
-        <label for="input-email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Username" id="input-email" required>
-        <label for="input-password"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" id="input-password" required>
-        <button type="submit" id="login-button">Login</button>
-        <p id="error-message" style="color:red;"></p>
+  <!--LOGIN FORM-->
+  <form id="login-form" style="display: none;">
+    <div class="form-elements-container">
+      <label for="input-email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Username" id="input-email" required>
+      <label for="input-password"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" id="input-password" required>
+      <button type="submit" id="login-button">Login</button>
+      <p id="error-message" style="color:red;"></p>
+    </div>
+  </form>
+
+  <!--CONTENT (SENSOR READINGS)-->
+  <div class="content-sign-in" id="content-sign-in" style="display: none;">
+    <div class="cards">
+      <!--TEMPERATURE -->
+      <div class="card">
+        <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE</p>
+        <p><span class="reading"><span id="temp"></span> °C</span></p>
       </div>
-    </form>
-
-    <!--CONTENT (SENSOR READINGS)-->
-    <div class="content-sign-in" id="content-sign-in" style="display: none;">
-      <div class="cards">
-        <!--TEMPERATURE -->
-        <div class="card">
-          <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE</p>
-          <p><span class="reading"><span id="temp"></span> °C</span></p>
-        </div>
-        <!--HUMIDITY-->
-        <div class="card">
-          <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY</p>
-          <p><span class="reading"><span id="hum"></span> %</span></p>
-        </div>
-        <!--PRESSURE-->
-        <div class="card">
-          <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> PRESSURE</p>
-          <p><span class="reading"><span id="pres"></span> hPa</span></p>
-        </div>
-        <!--gaz-->
-        <div class="card">
-          <p><i class="fas fa-wind" style="color:#3788e4;"></i> GAZ</p>
-          <p><span class="reading"><span id="gaz"></span></span></p>
-        </div>
-        <!--flame-->
-        <div class="card">
-          <p><i class="fas fa-fire" style="color:#d9534f;"></i> FLAME</p>
-          <p><span class="reading"><span id="flame"></span></span></p>
-        </div>
-        <!--co2-->
-        <div class="card">
-          <p><i class="fas fa-cloud" style="color:#5bc0de;"></i> CO2</p>
-          <p><span class="reading"><span id="co2"></span>ppm</span></p>
-        </div>
-
-        <!-- Boutons personnalisés -->
-
-          <button id="sendStringBtn">Button 1 : OFF</button>
-          <button id="incrementBtn">Button 2 : OFF</button>
-          <button id="toggleBtn">Button 3 : OFF</button>
+      <!--HUMIDITY-->
+      <div class="card">
+        <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY</p>
+        <p><span class="reading"><span id="hum"></span> %</span></p>
       </div>
+      <!--PRESSURE-->
+      <div class="card">
+        <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> PRESSURE</p>
+        <p><span class="reading"><span id="pres"></span> hPa</span></p>
+      </div>
+      <!--gaz-->
+      <div class="card">
+        <p><i class="fas fa-wind" style="color:#3788e4;"></i> GAZ</p>
+        <p><span class="reading"><span id="gaz"></span></span></p>
+      </div>
+      <!--flame-->
+      <div class="card">
+        <p><i class="fas fa-fire" style="color:#d9534f;"></i> FLAME</p>
+        <p><span class="reading"><span id="flame"></span></span></p>
+      </div>
+      <!--co2-->
+      <div class="card">
+        <p><i class="fas fa-cloud" style="color:#5bc0de;"></i> CO2</p>
+        <p><span class="reading"><span id="co2"></span>ppm</span></p>
+      </div>
+
+      <!-- Boutons personnalisés -->
+
+      <button id="sendStringBtn">Button 1 : OFF</button>
+      <button id="incrementBtn">Button 2 : OFF</button>
+      <button id="toggleBtn">Button 3 : OFF</button>
     </div>
-    <script type="module" src="scripts/auth.js"></script>
-    <script type="module" src="scripts/index.js"></script>
-  </body>
+  </div>
+  <script type="module" src="scripts/auth.js"></script>
+  <script type="module" src="scripts/index.js"></script>
+</body>
 </html>
