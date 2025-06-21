@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+import emailjs from 'https://esm.sh/@emailjs/browser';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -34,6 +35,7 @@ const presElement = document.getElementById("pres");
 const gazElement = document.getElementById("gaz");
 const flameElement = document.getElementById("flame");
 const co2Element = document.getElementById("co2");
+const alertEmailInput = document.getElementById("alertEmail");
 
 // Manage Login/Logout UI
 const setupUI = (user) => {
@@ -56,7 +58,9 @@ const setupUI = (user) => {
     const dbRefGaz = ref(database, `${dbPath}/gaz`);
     const dbRefFlame = ref(database, `${dbPath}/flame`);
     const dbRefCo2 = ref(database, `${dbPath}/co2`);
+    const emailRef = ref(database, `${dbPath}/alertEmail`);
 
+    console.log("user connected, Email sent!");
     // Update page with new readings
     onValue(dbRefTemp, (snap) => {
       tempElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
@@ -69,11 +73,81 @@ const setupUI = (user) => {
     onValue(dbRefPres, (snap) => {
       presElement.innerText = snap.val()?.toFixed(2) ?? "N/A";
     });
-    onValue(dbRefGaz, (snap) => {
-      gazElement.innerText = snap.val();
+    // Charger la valeur email depuis la base et afficher dans l'input
+    let currentAlertEmail = "omejri417@gmail.com";
+    emailjs.init("FOY90D2TQq6LOrT84");
+
+    onValue(emailRef, (snapshot) => {
+      currentAlertEmail = snapshot.val() || "omejri417@gmail.com";
+      alertEmailInput.value = currentAlertEmail;
+      console.log(currentAlertEmail);
+
+      emailjs.send("service_bf82mnr", "template_nu0p69n", {
+        to_email: currentAlertEmail,
+        subject: "Utilisateur conntecté",
+        message: "bon retoure !"
+      })
     });
+
+    // Mettre à jour la base quand l'utilisateur change l'email dans l'input
+    alertEmailInput.addEventListener('change', () => {
+      const newEmail = alertEmailInput.value.trim();
+      if (newEmail) {
+        set(emailRef, newEmail);
+      }
+      console.log(newEmail);
+    });
+
+    let gazAlertSent = false;
+    onValue(dbRefGaz, (snap) => {
+      const gazValue = snap.val();
+      gazElement.innerText = gazValue;
+
+      if (gazValue === " Gaz detected" && !gazAlertSent) {
+        gazAlertSent = true;
+
+        emailjs.send("service_bf82mnr", "template_nu0p69n", {
+          to_email: currentAlertEmail,
+          subject: "Alerte : Gaz détecté",
+          message: "⚠️ Attention : un gaz a été détecté par votre station météo !"
+        })
+          .then(() => {
+            console.log("gaz Email envoyé !");
+          })
+          .catch((error) => {
+            console.error("Erreur d'envoi d'email :", error);
+          });
+      }
+
+      if (gazValue !== " Gaz detected") {
+        gazAlertSent = false;
+      }
+    });
+
+    let flameAlertSent = false;
     onValue(dbRefFlame, (snap) => {
-      flameElement.innerText = snap.val();
+
+      const flameValue = snap.val();
+      flameElement.innerText = flameValue;
+
+      if (flameValue === " flame detected" && !flameAlertSent) {
+        flameAlertSent = true;
+        emailjs.send("service_bf82mnr", "template_nu0p69n", {
+          to_email: currentAlertEmail,
+          subject: "Alerte : flame détecté",
+          message: "⚠️ Attention : un flame a été détecté par votre station météo !"
+        })
+          .then(() => {
+            console.log("flame Email envoyé !");
+          })
+          .catch((error) => {
+            console.error("Erreur d'envoi d'email :", error);
+          });
+      }
+
+      if (flameValue !== " flame detected") {
+        flameAlertSent = false;
+      }
     });
     onValue(dbRefCo2, (snap) => {
       co2Element.innerText = snap.val();
