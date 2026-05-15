@@ -33,4 +33,3 @@ To get started with the Weather Station project, follow these steps:
 - Install the required libraries for your microcontroller.  
 - Follow the instructions provided in each section to upload the code to your specific hardware.  
 - Ensure that all components are connected properly before powering on.
-- nmcli -t -f active,ssid dev wifi
